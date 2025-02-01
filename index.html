@@ -1,1 +1,41 @@
-<h1>Hello World!</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PYFEDITOR Public Library</title>
+</head>
+<body>
+
+    <h1>Library:</h1>
+    
+    <ul id="contentList">
+    </ul>
+
+    <script>
+        window.onload = function() {
+            fetch('files.json')
+                .then(response => response.json())
+                .then(data => {
+                    const contentList = document.getElementById('contentList');
+                    contentList.innerHTML = '';
+                    data.files.forEach(function(file) {
+                        fetch(file)
+                            .then(response => response.text())
+                            .then(fileContent => {
+                                const lines = fileContent.split('\n');
+                                lines.forEach(function(line) {
+                                    const li = document.createElement('li');
+                                    li.textContent = line;
+                                    contentList.appendChild(li);
+                                });
+                            })
+                            .catch(error => console.error('Error loading file:', error));
+                    });
+                })
+                .catch(error => console.error('Error loading files list:', error));
+        };
+    </script>
+
+</body>
+</html>
